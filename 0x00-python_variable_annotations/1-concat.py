@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A type-annotated function concat 
+"""A type-annotated function concat
 @param (str1): <string>
 @param (str2): <strign>
 
