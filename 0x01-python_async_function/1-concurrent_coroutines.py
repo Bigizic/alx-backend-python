@@ -16,5 +16,11 @@ async def wait_n(n, max_delay):
     task = [asyncio.create_task(x) for x in spawns]
 
     result = await asyncio.gather(*task)
+    num = result[0]
+    new_list = []
+    while result:
+        min_e = min(result)
+        new_list.append(min_e)
+        result.remove(min_e)
 
-    return result
+    return new_list
