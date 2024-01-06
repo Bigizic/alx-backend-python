@@ -22,7 +22,6 @@ class TestAccessNestedMap(unittest.TestCase):
         """Tests the access_nested_map method from utils"""
         self.assertEqual(anm(n_map, pa), expect)
 
-
     @parameterized.expand([
         ({}, ("a",)),
         ({"a": 1}, ("a", "b"))
