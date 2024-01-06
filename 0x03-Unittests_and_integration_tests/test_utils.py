@@ -3,8 +3,9 @@
 """
 
 from parameterized import parameterized, parameterized_class
+from typing import Dict, List, Tuple, Union
 import unittest
-from utils import access_nested_map
+from utils import access_nested_map as anm
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -12,11 +13,15 @@ class TestAccessNestedMap(unittest.TestCase):
     """
 
     @parameterized.expand([
-        ({"a": 1}, ("a",)),
-        ({"a": {"b": 2}}, ("a",)),
-        ({"a": {"b": 2}}, ("a", "b"))
+        ({"a": 1}, ("a",), 1),
+        ({"a": {"b": 2}}, ("a",), {"b": 2}),
+        ({"a": {"b": 2}}, ("a", "b"), 2)
     ])
-    def test_access_nested_map(self, n_map, pa):
+    def test_access_nested_map(
+            self,
+            n_map: Dict,
+            pa: Tuple[str],
+            expected: Union[Dict, int]
+            ) -> None:
         """Tests the access_nested_map method from utils"""
-        self.assertEqual(access_nested_map(n_map, pa), n_map[pa[0]]
-                         if len(pa) < 2 else n_map[pa[0]][pa[1]])
+        self.assertEqual(anm(n_map, pa), expected)
