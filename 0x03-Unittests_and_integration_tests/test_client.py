@@ -184,3 +184,15 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def tearDownClass(self) -> None:
         """Tear down method """
         self.get_patcher.stop()
+
+    def test_public_repos(self) -> None:
+        """Implementation of public repos test in an intgration test
+        """
+        self.assertEqual(GOC("google").public_repos(), self.expected_repos)
+
+    def test_public_repos_with_license(self) -> None:
+        """Implementation of public repos with licenses in an integration
+        test
+        """
+        self.assertEqual(GOC('google').public_repos("apache-2.0"),
+                         self.apache2_repos)
