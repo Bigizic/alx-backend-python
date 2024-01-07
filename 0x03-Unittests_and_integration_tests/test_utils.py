@@ -56,7 +56,6 @@ class TestGetJson(unittest.TestCase):
 class TestMemoize(unittest.TestCase):
     """Implementation of the utils.memoize unittests
     """
-
     def test_memoize(self) -> None:
         """test that correct result is returned when calling a_property and
         a_method
@@ -74,4 +73,5 @@ class TestMemoize(unittest.TestCase):
             test = TestClass()
             self.assertEqual(test.a_property(), 42)
             self.assertEqual(test.a_property(), 42)
+            self.assertNotEqual(hi.assert_called_once(), 42)
             hi.assert_called_once()
