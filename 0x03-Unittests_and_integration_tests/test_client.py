@@ -2,7 +2,8 @@
 """Client unittests implementation
 """
 
-from parameterized import parameterized
+from fixtures import TEST_PAYLOAD
+from parameterized import parameterized, parameterized_class
 from typing import Dict, List, Tuple, Union
 import unittest
 from unittest.mock import MagicMock, patch, Mock, PropertyMock
@@ -135,3 +136,51 @@ class TestGithubOrgClient(unittest.TestCase):
                              ])
             mocked.assert_called_once()
         m_mock.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, license: Dict[str, Dict],
+                         license_key: str, expected: bool) -> None:
+        """Implementation of repos license unittests
+        """
+        temp = GOC("google")
+        self.assertEqual(temp.has_license(license, license_key), expected)
+
+
+@parameterized_class([
+    {
+        'org_payload': TEST_PAYLOAD[0][0],
+        'repos_payload': TEST_PAYLOAD[0][1],
+        'expected_repos': TEST_PAYLOAD[0][2],
+        'apache2_repos': TEST_PAYLOAD[0][3]
+    }
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Implementation of GithubOrgClient.public_repos method in an
+    integration test.
+    """
+
+    @classmethod
+    def setUpClass(self) -> None:
+        """ Setup method """
+        set_payload = {
+            'https://api.github.com/orgs/google': self.org_payload,
+            'https://api.github.com/orgs/google/repos': self.repos_payload
+        }
+
+        def get_payload(url):
+            """ mock requests.get to return example payloads
+            found in the fixtures
+            """
+            if url in set_payload:
+                return Mock(**{'json.return_value': set_payload[url]})
+            return HTTPError
+        self.get_patcher = patch("requests.get", side_effect=get_payload)
+        self.get_patcher.start()
+
+    @classmethod
+    def tearDownClass(self) -> None:
+        """Tear down method """
+        self.get_patcher.stop()
